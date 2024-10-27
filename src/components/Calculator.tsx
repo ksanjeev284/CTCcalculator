@@ -71,21 +71,23 @@ export function Calculator() {
         <div className="space-y-6">
           <div className="space-y-4">
             <label className="block">
-              <span className="text-gray-700 font-medium">Cost to Company (CTC)</span>
+              <span className="text-gray-700 font-medium">
+                Cost to Company (CTC)
+              </span>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 sm:text-sm">₹</span>
                 </div>
                 <input
-  type="number"
-  value={ctc}
-  onChange={(e) => {
-    const value = e.target.value;
-    setCTC(value === '' ? '' : Number(value)); // Allow empty input
-  }}
-  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-  placeholder="Enter your CTC"
-/>
+                  type="number"
+                  value={ctc}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCTC(value === '' ? '' : Number(value)); // Allow empty input
+                  }}
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Enter your CTC"
+                />
               </div>
             </label>
 
@@ -113,7 +115,9 @@ export function Calculator() {
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-gray-700 font-medium">Advanced Settings</span>
+              <span className="text-gray-700 font-medium">
+                Advanced Settings
+              </span>
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className="text-indigo-600 hover:text-indigo-700"
@@ -124,7 +128,9 @@ export function Calculator() {
 
             {showAdvanced && (
               <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-medium text-gray-900">Customize Components (%)</h3>
+                <h3 className="font-medium text-gray-900">
+                  Customize Components (%)
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <label className="block">
                     <span className="text-sm text-gray-600">Basic Salary</span>
@@ -132,7 +138,11 @@ export function Calculator() {
                       type="number"
                       value={structure.basic}
                       onChange={(e) =>
-                        setStructure({ ...structure, basic: Number(e.target.value) })
+                        setStructure({
+                          ...structure,
+                          basic:
+                            e.target.value === '' ? '' : Number(e.target.value),
+                        })
                       }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
@@ -143,7 +153,11 @@ export function Calculator() {
                       type="number"
                       value={structure.hra}
                       onChange={(e) =>
-                        setStructure({ ...structure, hra: Number(e.target.value) })
+                        setStructure({
+                          ...structure,
+                          hra:
+                            e.target.value === '' ? '' : Number(e.target.value),
+                        })
                       }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
@@ -153,7 +167,10 @@ export function Calculator() {
             )}
           </div>
 
-          <CTCBreakdown calculation={calculateSalaryComponents()} frequency={frequency} />
+          <CTCBreakdown
+            calculation={calculateSalaryComponents()}
+            frequency={frequency}
+          />
         </div>
 
         <InfoPanel />
