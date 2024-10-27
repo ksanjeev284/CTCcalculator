@@ -6,7 +6,7 @@ import { downloadSummary } from '../utils/downloadSummary';
 import type { SalaryStructure, SalaryCalculation } from '../types';
 
 export function Calculator() {
-  const [ctc, setCTC] = useState<number>(1200000);
+  const [ctc, setCTC] = useState<number | ''>('');
   const [frequency, setFrequency] = useState<'monthly' | 'yearly'>('yearly');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [structure, setStructure] = useState<SalaryStructure>({
@@ -77,12 +77,15 @@ export function Calculator() {
                   <span className="text-gray-500 sm:text-sm">₹</span>
                 </div>
                 <input
-                  type="number"
-                  value={ctc}
-                  onChange={(e) => setCTC(Number(e.target.value))}
-                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                  placeholder="Enter your CTC"
-                />
+  type="number"
+  value={ctc}
+  onChange={(e) => {
+    const value = e.target.value;
+    setCTC(value === '' ? '' : Number(value)); // Allow empty input
+  }}
+  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+  placeholder="Enter your CTC"
+/>
               </div>
             </label>
 
