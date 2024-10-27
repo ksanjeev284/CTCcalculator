@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Calculator as CalcIcon, HelpCircle, Download } from 'lucide-react';
 import { CTCBreakdown } from './CTCBreakdown';
 import { InfoPanel } from './InfoPanel';
 import { downloadSummary } from '../utils/downloadSummary';
-import type { SalaryStructure, SalaryCalculation } from '../types';
+import type { SalaryStructure } from '../types';
 
 export function Calculator() {
   const [ctc, setCTC] = useState<number | ''>('');
@@ -21,6 +21,41 @@ export function Calculator() {
     esi: 1.75,
     incomeTax: 10,
   });
+  const [rentPaid, setRentPaid] = useState<number | ''>('');
+  const [isMetroCity, setIsMetroCity] = useState<boolean>(true); // Default to metro
+  const [taxRegime, setTaxRegime] = useState<'old' | 'new'>('old'); // Default to old tax regime
+
+  const calculateIncomeTax = (netSalary: number) => {
+    let tax = 0;
+
+    if (taxRegime === 'old') {
+      if (netSalary <= 250000) {
+        tax = 0;
+      } else if (netSalary <= 500000) {
+        tax = (netSalary - 250000) * 0.05;
+      } else if (netSalary <= 1000000) {
+        tax = 12500 + (netSalary - 500000) * 0.2;
+      } else {
+        tax = 112500 + (netSalary - 1000000) * 0.3;
+      }
+    } else {
+      if (netSalary <= 300000) {
+        tax = 0;
+      } else if (netSalary <= 600000) {
+        tax = (netSalary - 300000) * 0.05 + 15000; // ₹15,000 for the first slab
+      } else if (netSalary <= 900000) {
+        tax = 15000 + (netSalary - 600000) * 0.1 + 15000; // ₹15,000 for the previous slab
+      } else if (netSalary <= 1200000) {
+        tax = 45000 + (netSalary - 900000) * 0.15; // ₹45,000 for the previous slab
+      } else if (netSalary <= 1500000) {
+        tax = 90000 + (netSalary - 1200000) * 0.2; // ₹90,000 for the previous slab
+      } else {
+        tax = 150000 + (netSalary - 1500000) * 0.3; // ₹1,50,000 for the previous slab
+      }
+    }
+
+    return tax;
+  };
 
   const calculateSalaryComponents = () => {
     const monthly = frequency === 'monthly';
@@ -33,13 +68,22 @@ export function Calculator() {
     const special = (baseAmount * structure.specialAllowance) / 100;
     const bonus = (baseAmount * structure.performanceBonus) / 100;
 
+    // HRA Exemption Calculation
+    const exemption1 = hra; // Actual HRA received
+    const exemption2 = isMetroCity
+      ? 0.5 * (basic + da) * 12
+      : 0.4 * (basic + da) * 12; // 50% or  40%
+    const exemption3 =
+      rentPaid === '' ? 0 : Number(rentPaid) - 0.1 * (basic + da) * 12; // Rent paid minus 10% of (Basic + DA)
+
+    const hraExemption = Math.min(exemption1, exemption2, exemption3);
+
     const grossSalary = basic + hra + da + lta + special + bonus;
 
     const epf = (basic * structure.epf) / 100;
     const pt = (grossSalary * structure.professionalTax) / 100;
     const esi = (grossSalary * structure.esi) / 100;
-    const tax = (grossSalary * structure.incomeTax) / 100;
-
+    const tax = calculateIncomeTax(grossSalary - epf - pt - esi);
     const totalDeductions = epf + pt + esi + tax;
     const netSalary = grossSalary - totalDeductions;
 
@@ -57,6 +101,7 @@ export function Calculator() {
       tax,
       totalDeductions,
       netSalary,
+      hraExemption, // Include HRA exemption in the returned object
     };
   };
 
@@ -161,6 +206,47 @@ export function Calculator() {
                       }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-sm text-gray-600">Rent Paid</span>
+                    <input
+                      type="number"
+                      value={rentPaid}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setRentPaid(value === '' ? '' : Number(value));
+                      }}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-sm text-gray-600">City Type</span>
+                    <select
+                      value={isMetroCity ? 'metro' : 'non-metro'}
+                      onChange={(e) => {
+                        setIsMetroCity(e.target.value === 'metro');
+                      }}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    >
+                      <option value="metro">Metro</option>
+                      <option value="non-metro">Non-Metro</option>
+                    </select>
+                  </label>
+
+                  <label className="block">
+                    <span className="text-sm text-gray-600">Tax Regime</span>
+                    <select
+                      value={taxRegime}
+                      onChange={(e) => {
+                        setTaxRegime(e.target.value as 'old' | 'new');
+                      }}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    >
+                      <option value="old">Old Tax Regime</option>
+                      <option value="new">New Tax Regime</option>
+                    </select>
                   </label>
                 </div>
               </div>
