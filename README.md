@@ -83,6 +83,8 @@ This calculator is for illustration purposes only. Actual salary calculations ma
 - Icons by [Lucide React](https://lucide.dev/)
 - Powered by [Vite](https://vitejs.dev/)
 
+## CTC Calculator FlowChart
+![My Image](https://github.com/ksanjeev284/CTCcalculator/blob/main/CTC%20Calculator%20Map.jpeg)
    
 
 
