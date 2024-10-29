@@ -1,7 +1,5 @@
 # CTC Calculator
 
-# CTC Calculator
-
 An interactive Cost to Company (CTC) calculator to help employees understand their salary structure and take-home pay.
 
 ![CTC Calculator Screenshot](screenshot.png)
