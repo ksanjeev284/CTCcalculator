@@ -1,21 +1,8 @@
 import React from 'react';
+import type { SalaryCalculation } from '../types';
 
 interface CTCBreakdownProps {
-  calculation: {
-    basic: number;
-    hra: number;
-    da: number;
-    lta: number;
-    special: number;
-    bonus: number;
-    grossSalary: number;
-    epf: number;
-    pt: number;
-    esi: number;
-    tax: number;
-    totalDeductions: number;
-    netSalary: number;
-  };
+  calculation: SalaryCalculation;
   frequency: 'monthly' | 'yearly';
 }
 
@@ -60,30 +47,64 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
               <span className="text-gray-600">Performance Bonus</span>
               <span className="font-medium">{formatCurrency(calculation.bonus)}</span>
             </div>
+            <div className="flex justify-between font-medium pt-2 border-t">
+              <span className="text-gray-700">Gross Salary</span>
+              <span>{formatCurrency(calculation.grossSalary)}</span>
+            </div>
           </div>
         </div>
 
         <div className="border-t pt-4">
           <h3 className="text-sm font-medium text-gray-500 mb-2">Deductions</h3>
           <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-600">EPF</span>
-              <span className="font-medium text-red-600">
-                -{formatCurrency(calculation.epf)}
-              </span>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span className="text-gray-600">EPF (Employee)</span>
+                <span className="font-medium text-red-600">
+                  -{formatCurrency(calculation.epf.employee)}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">EPF (Employer)</span>
+                <span className="text-gray-500">
+                  {formatCurrency(calculation.epf.employer)}
+                </span>
+              </div>
             </div>
+
+            {calculation.esi.applicable ? (
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ESI (Employee)</span>
+                  <span className="font-medium text-red-600">
+                    -{formatCurrency(calculation.esi.employee)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">ESI (Employer)</span>
+                  <span className="text-gray-500">
+                    {formatCurrency(calculation.esi.employer)}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between">
+                <span className="text-gray-600">ESI</span>
+                <span className="text-gray-500">Not Applicable</span>
+              </div>
+            )}
+
             <div className="flex justify-between">
               <span className="text-gray-600">Professional Tax</span>
-              <span className="font-medium text-red-600">
-                -{formatCurrency(calculation.pt)}
-              </span>
+              {calculation.pt > 0 ? (
+                <span className="font-medium text-red-600">
+                  -{formatCurrency(calculation.pt)}
+                </span>
+              ) : (
+                <span className="text-gray-500">Not Applicable</span>
+              )}
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">ESI</span>
-              <span className="font-medium text-red-600">
-                -{formatCurrency(calculation.esi)}
-              </span>
-            </div>
+
             <div className="flex justify-between">
               <span className="text-gray-600">Income Tax</span>
               <span className="font-medium text-red-600">
@@ -97,10 +118,6 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
           <h3 className="text-sm font-medium text-gray-500 mb-2">Summary</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-gray-600">Gross Salary</span>
-              <span className="font-medium">{formatCurrency(calculation.grossSalary)}</span>
-            </div>
-            <div className="flex justify-between">
               <span className="text-gray-600">Total Deductions</span>
               <span className="font-medium text-red-600">
                 -{formatCurrency(calculation.totalDeductions)}
@@ -110,6 +127,26 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
               <span className="text-gray-900">Net {frequency === 'monthly' ? 'Monthly' : 'Annual'} Salary</span>
               <span className="text-green-600">{formatCurrency(calculation.netSalary)}</span>
             </div>
+          </div>
+        </div>
+
+        <div className="border-t pt-4">
+          <h3 className="text-sm font-medium text-gray-500 mb-2">Cost to Company Breakup</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Gross Salary</span>
+              <span className="font-medium">{formatCurrency(calculation.grossSalary)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Employer EPF Contribution</span>
+              <span className="font-medium">{formatCurrency(calculation.epf.employer)}</span>
+            </div>
+            {calculation.esi.applicable && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Employer ESI Contribution</span>
+                <span className="font-medium">{formatCurrency(calculation.esi.employer)}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
