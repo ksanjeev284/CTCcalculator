@@ -16,7 +16,7 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6">
+    <div className="bg-gray-50 rounded-lg p-4 md:p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">Salary Breakdown</h2>
       
       <div className="space-y-6">
@@ -57,20 +57,27 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
         <div className="border-t pt-4">
           <h3 className="text-sm font-medium text-gray-500 mb-2">Deductions</h3>
           <div className="space-y-2">
-            <div className="space-y-1">
+            {calculation.epf.applicable ? (
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">EPF (Employee)</span>
+                  <span className="font-medium text-red-600">
+                    -{formatCurrency(calculation.epf.employee)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">EPF (Employer)</span>
+                  <span className="text-gray-500">
+                    {formatCurrency(calculation.epf.employer)}
+                  </span>
+                </div>
+              </div>
+            ) : (
               <div className="flex justify-between">
-                <span className="text-gray-600">EPF (Employee)</span>
-                <span className="font-medium text-red-600">
-                  -{formatCurrency(calculation.epf.employee)}
-                </span>
+                <span className="text-gray-600">EPF</span>
+                <span className="text-gray-500">Not Opted</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">EPF (Employer)</span>
-                <span className="text-gray-500">
-                  {formatCurrency(calculation.epf.employer)}
-                </span>
-              </div>
-            </div>
+            )}
 
             {calculation.esi.applicable ? (
               <div className="space-y-1">
@@ -137,10 +144,12 @@ export function CTCBreakdown({ calculation, frequency }: CTCBreakdownProps) {
               <span className="text-gray-600">Gross Salary</span>
               <span className="font-medium">{formatCurrency(calculation.grossSalary)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Employer EPF Contribution</span>
-              <span className="font-medium">{formatCurrency(calculation.epf.employer)}</span>
-            </div>
+            {calculation.epf.applicable && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Employer EPF Contribution</span>
+                <span className="font-medium">{formatCurrency(calculation.epf.employer)}</span>
+              </div>
+            )}
             {calculation.esi.applicable && (
               <div className="flex justify-between">
                 <span className="text-gray-600">Employer ESI Contribution</span>
