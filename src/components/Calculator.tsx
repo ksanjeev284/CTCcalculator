@@ -13,6 +13,7 @@ export function Calculator() {
   const [selectedState, setSelectedState] = useState<PTState>(ptRates[0]);
   const [customPT, setCustomPT] = useState<string>('200');
   const [isPTApplicable, setIsPTApplicable] = useState(true);
+  const [isEPFApplicable, setIsEPFApplicable] = useState(true);
   const [structure, setStructure] = useState<Record<keyof SalaryStructure, string>>({
     basic: '40',
     hra: '20',
@@ -36,7 +37,6 @@ export function Calculator() {
   });
 
   const handleCTCChange = (value: string) => {
-    // Remove any non-numeric characters
     const numericValue = value.replace(/[^0-9]/g, '');
     if (frequency === 'monthly') {
       setCTC(numericValue === '' ? '' : String(Number(numericValue) * 12));
@@ -51,7 +51,6 @@ export function Calculator() {
   };
 
   const handleStructureChange = (key: keyof SalaryStructure, value: string) => {
-    // Remove any non-numeric characters except decimal point
     const numericValue = value.replace(/[^0-9.]/g, '');
     setStructure(prev => ({
       ...prev,
@@ -60,7 +59,6 @@ export function Calculator() {
   };
 
   const handleDeductionChange = (key: keyof TaxDeductions, value: string) => {
-    // Remove any non-numeric characters
     const numericValue = value.replace(/[^0-9]/g, '');
     setDeductions(prev => ({
       ...prev,
@@ -72,13 +70,12 @@ export function Calculator() {
     let taxableIncome = annualIncome;
     
     if (taxRegime === 'old') {
-      // Apply deductions for old regime
       taxableIncome -= (
         Number(deductions.section80C) +
         Number(deductions.section80D) +
         Number(deductions.section80TTA) +
         Number(deductions.homeLoanInterest) +
-        Math.min(Number(deductions.rentPaid) * 0.1, 60000) + // HRA exemption simplified
+        Math.min(Number(deductions.rentPaid) * 0.1, 60000) +
         Number(deductions.otherDeductions)
       );
     }
@@ -86,7 +83,6 @@ export function Calculator() {
     let tax = 0;
 
     if (taxRegime === 'new') {
-      // New Tax Regime FY 2024-25
       if (taxableIncome <= 300000) {
         tax = 0;
       } else if (taxableIncome <= 600000) {
@@ -101,7 +97,6 @@ export function Calculator() {
         tax = 150000 + (taxableIncome - 1500000) * 0.3;
       }
     } else {
-      // Old Tax Regime FY 2024-25
       if (taxableIncome <= 250000) {
         tax = 0;
       } else if (taxableIncome <= 500000) {
@@ -113,9 +108,7 @@ export function Calculator() {
       }
     }
 
-    // Add 4% Health and Education Cess
-    tax = tax * 1.04;
-
+    tax = tax * 1.04; // 4% Health and Education Cess
     return tax;
   };
 
@@ -135,7 +128,7 @@ export function Calculator() {
     const grossSalary = basic + hra + da + lta + special + bonus;
 
     // EPF Calculation (12% each from employee and employer)
-    const epfEmployee = (basic * Number(structure.epf)) / 100;
+    const epfEmployee = isEPFApplicable ? (basic * Number(structure.epf)) / 100 : 0;
     const epfEmployer = epfEmployee;
 
     // ESI Calculation
@@ -163,7 +156,8 @@ export function Calculator() {
       epf: {
         employee: epfEmployee,
         employer: epfEmployer,
-        total: epfEmployee + epfEmployer
+        total: epfEmployee + epfEmployer,
+        applicable: isEPFApplicable
       },
       pt,
       esi: {
@@ -188,8 +182,8 @@ export function Calculator() {
   const calculation = calculateSalaryComponents();
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-      <div className="grid md:grid-cols-2 gap-8">
+    <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+      <div className="grid md:grid-cols-2 gap-6 md:gap-8">
         <div className="space-y-6">
           <div className="space-y-4">
             <label className="block">
@@ -326,6 +320,28 @@ export function Calculator() {
                     />
                   </label>
 
+                  <div className="col-span-2 space-y-2">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={isEPFApplicable}
+                        onChange={(e) => setIsEPFApplicable(e.target.checked)}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span className="text-sm text-gray-600">Opt-in for EPF (12% of Basic)</span>
+                    </label>
+
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={isPTApplicable}
+                        onChange={(e) => setIsPTApplicable(e.target.checked)}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span className="text-sm text-gray-600">Apply Professional Tax</span>
+                    </label>
+                  </div>
+
                   <label className="block">
                     <span className="text-sm text-gray-600">Tax Regime</span>
                     <select
@@ -369,18 +385,6 @@ export function Calculator() {
                       />
                     </label>
                   )}
-
-                  <div className="col-span-2">
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={isPTApplicable}
-                        onChange={(e) => setIsPTApplicable(e.target.checked)}
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                      />
-                      <span className="text-sm text-gray-600">Apply Professional Tax</span>
-                    </label>
-                  </div>
 
                   {taxRegime === 'old' && (
                     <div className="col-span-2 space-y-4 border-t pt-4">
@@ -440,6 +444,21 @@ export function Calculator() {
               </div>
             )}
           </div>
+
+          {calculation && (
+            <div className="bg-indigo-50 rounded-lg p-4 text-center">
+              <p className="text-sm text-indigo-600 font-medium">
+                {frequency === 'yearly' ? 'Monthly' : 'Annual'} Equivalent
+              </p>
+              <p className="text-2xl font-bold text-indigo-700">
+                ₹{new Intl.NumberFormat('en-IN').format(
+                  frequency === 'yearly' 
+                    ? Math.round(calculation.netSalary / 12)
+                    : Math.round(calculation.netSalary * 12)
+                )}
+              </p>
+            </div>
+          )}
 
           {calculation && <CTCBreakdown calculation={calculation} frequency={frequency} />}
         </div>
