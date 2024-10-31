@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Sitemap: https://ctccalculator.in/sitemap.xml
+
+# Prevent crawling of admin or private areas if you have any
+Disallow: /admin/
+Disallow: /private/
+Disallow: /cgi-bin/
+
+# Optional: Add crawl-delay if you want to control crawler speed
+
+# Specific rules for major search engines if needed
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
