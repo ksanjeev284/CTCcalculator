@@ -73,7 +73,7 @@ export function Privacy() {
                 <p className="text-gray-600">
                   If you have any questions about this Privacy Policy, please contact us at{' '}
                   <a href="mailto:ksanjeev284@gmail.com" className="text-indigo-600 hover:text-indigo-700">
-                    ksanjeev284@gmail.com
+                  ksanjeev284@gmail.com
                   </a>
                 </p>
               </section>

@@ -25,7 +25,10 @@ export function Contact() {
                       <Mail className="h-5 w-5 mr-3" />
                       <span>ksanjeev284@gmail.com</span>
                     </div>
-                   
+                    <div className="flex items-center text-gray-600">
+                      <Phone className="h-5 w-5 mr-3" />
+                      <span>+91 (123) 456-7890</span>
+                    </div>
                     <div className="flex items-center text-gray-600">
                       <MapPin className="h-5 w-5 mr-3" />
                       <span>Bangalore, India</span>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -9,22 +10,22 @@ export function Navigation() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <a href="/" className="text-gray-800 font-semibold text-lg">
+            <Link to="/" className="text-gray-800 font-semibold text-lg">
               CTC Calculator
-            </a>
+            </Link>
           </div>
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <a href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
+            <Link to="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
               Home
-            </a>
-            <a href="/contact" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
+            </Link>
+            <Link to="/contact" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
               Contact Us
-            </a>
-            <a href="/privacy" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
+            </Link>
+            <Link to="/privacy" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm">
               Privacy Policy
-            </a>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -43,24 +44,24 @@ export function Navigation() {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             >
               Home
-            </a>
-            <a
-              href="/contact"
+            </Link>
+            <Link
+              to="/contact"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             >
               Contact Us
-            </a>
-            <a
-              href="/privacy"
+            </Link>
+            <Link
+              to="/privacy"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             >
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </div>
       )}
