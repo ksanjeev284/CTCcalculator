@@ -69,8 +69,8 @@ export function Privacy() {
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Contact Us</h2>
               <p className="text-gray-600">
                 If you have any questions about this Privacy Policy, please contact us at{' '}
-                <a href="mailto:privacy@ctccalculator.in" className="text-indigo-600 hover:text-indigo-700">
-                  privacy@ctccalculator.in
+                <a href="mailto:ksanjeev284@gmail.com" className="text-indigo-600 hover:text-indigo-700">
+                  ksanjeev284@gmail.com
                 </a>
               </p>
             </section>
