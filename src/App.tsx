@@ -12,7 +12,11 @@ function App() {
           Calculate your take-home salary and understand your complete compensation structure
         </p>
       </header>
-      <Calculator />
+      
+      <main>
+        <Calculator />
+      </main>
+      
       <footer className="mt-8 text-center text-sm text-gray-500">
         <p>© 2024 CTC Calculator. All calculations are for illustration purposes only.</p>
       </footer>
