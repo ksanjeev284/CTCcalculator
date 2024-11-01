@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calculator as CalcIcon, HelpCircle, Download } from 'lucide-react';
+import { useState } from 'react';
+import { Download } from 'lucide-react';
 import { CTCBreakdown } from './CTCBreakdown';
 import { InfoPanel } from './InfoPanel';
 import { downloadSummary } from '../utils/downloadSummary';
